@@ -47,7 +47,7 @@ bookRouter.get("/filter" , async (req , res) => {
         console.log(error);
         res.status(500).send({msg : "failed" , data : []});
     }
-})
+});
 
 
 module.exports = bookRouter;

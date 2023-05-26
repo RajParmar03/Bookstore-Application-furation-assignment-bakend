@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const bookSchema = mongoose.Schema({
+    poster : {
+        type : String,
+        require : true,
+    },
     title : {
         type : String,
         require : true,
