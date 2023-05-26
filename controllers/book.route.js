@@ -38,4 +38,16 @@ bookRouter.get("/search" , async (req , res) => {
     }
 });
 
+bookRouter.get("/filter" , async (req , res) => {
+    const filterQuery = req.query.filter;
+    try {
+        const books = await BookModel.find({genre : filterQuery});
+        res.status(200).send({msg : "success" , data : books});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({msg : "failed" , data : []});
+    }
+})
+
+
 module.exports = bookRouter;
