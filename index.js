@@ -18,4 +18,4 @@ app.listen(port , async() => {
         console.log("failed to connect to DB...");
     }
     console.log("server is successfully running...");
-})
+});
