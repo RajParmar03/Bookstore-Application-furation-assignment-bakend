@@ -53,14 +53,21 @@ userRouter.post("/login", async (req, res) => {
 })
 
 userRouter.patch("/addtocart", async (req, res) => {
-    const {id} = req.body;
+    const {_id} = req.body;
     const token = req.headers.authorization;
     try {
         const {username} = jwt.verify(token, 'rajparmar');
         const [user] = await UserModel.find({username : username});
-        const newCart = [...user.cart , req.body];
-        await UserModel.findByIdAndUpdate({_id : user.id} , {cart : newCart});
-        res.status(200).send({msg : "successfully added to cart." , isSuccess : true});
+        const checkingArray = user.cart.filter((elem) => {
+            return elem._id === _id;
+        });
+        if(checkingArray.length === 0){
+            const newCart = [...user.cart , req.body];
+            await UserModel.findByIdAndUpdate({_id : user.id} , {cart : newCart});
+            res.status(200).send({msg : "successfully added to cart." , isSuccess : true});
+        }else{
+            res.status(400).send({msg : "this book is already in your cart." , isSuccess : false});
+        }
     } catch (error) {
         console.log(error);
         res.status(400).send({msg : "failed in added to cart." , isSuccess : false});
@@ -81,6 +88,19 @@ userRouter.patch("/removefromcart", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(400).send({msg : "failed in remove from cart." , isSuccess : false});
+    }
+});
+
+userRouter.patch("/clearcart", async (req, res) => {
+    const token = req.headers.authorization;
+    try {
+        const {username} = jwt.verify(token, 'rajparmar');
+        const [user] = await UserModel.find({username : username});
+        await UserModel.findByIdAndUpdate({_id : user.id} , {cart : []});
+        res.status(200).send({msg : "successfully clear the cart." , isSuccess : true});
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({msg : "failed in clearing the cart." , isSuccess : false});
     }
 });
 

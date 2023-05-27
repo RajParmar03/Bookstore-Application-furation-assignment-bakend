@@ -26,11 +26,13 @@ bookRouter.get("/book/:id" , async (req , res) => {
 
 bookRouter.get("/search" , async (req , res) => {
     const searchQuery = req.query.search;
+    console.log(searchQuery);
     try {
         const books = await BookModel.find();
         const newBooks = books.filter((elem) => {
-            return elem.title.includes(searchQuery) || elem.author.includes(searchQuery) || elem.genre.includes(searchQuery);
+            return elem?.title?.includes(searchQuery) || elem?.author?.includes(searchQuery) || elem?.genre?.includes(searchQuery);
         });
+        console.log(newBooks);
         res.status(200).send({msg : "success" , data : newBooks});
     } catch (error) {
         console.log(error);
