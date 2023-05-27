@@ -58,12 +58,29 @@ userRouter.patch("/addtocart", async (req, res) => {
     try {
         const {username} = jwt.verify(token, 'rajparmar');
         const [user] = await UserModel.find({username : username});
-        const newCart = [...user.cart , id];
+        const newCart = [...user.cart , req.body];
         await UserModel.findByIdAndUpdate({_id : user.id} , {cart : newCart});
         res.status(200).send({msg : "successfully added to cart." , isSuccess : true});
     } catch (error) {
         console.log(error);
         res.status(400).send({msg : "failed in added to cart." , isSuccess : false});
+    }
+});
+
+userRouter.patch("/removefromcart", async (req, res) => {
+    const {_id} = req.body;
+    const token = req.headers.authorization;
+    try {
+        const {username} = jwt.verify(token, 'rajparmar');
+        const [user] = await UserModel.find({username : username});
+        const newCart = user.cart.filter((elem) => {
+            return elem._id !== _id;
+        });
+        await UserModel.findByIdAndUpdate({_id : user.id} , {cart : newCart});
+        res.status(200).send({msg : "successfully removed from cart." , isSuccess : true});
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({msg : "failed in remove from cart." , isSuccess : false});
     }
 });
 
